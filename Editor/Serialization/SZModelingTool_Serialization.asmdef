@@ -1,0 +1,8 @@
+{
+    "name": "SZModelingTool_Serialization",
+    "references": [
+		"SZModelingTool_Core"
+	],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}
