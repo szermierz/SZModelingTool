@@ -1,0 +1,8 @@
+{
+    "name": "SZModelingTool_ToolsetGroups",
+    "references": [
+		"SZModelingTool_Core"
+	],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}
