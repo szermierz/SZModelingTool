@@ -1,48 +1,32 @@
-﻿using UnityEditor;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
 using UnityEngine;
-
 
 namespace SZ.ModelingTool
 {
-    public class ModelingWindow : EditorWindow
+    public class TouchSelectTool : ToolBase
     {
-        private const string c_windowTitle = "3D Modeling tool";
-        private const string c_windowMenuItem = "Tools/SZ/3D Modeling tool";
-
-        private void OnEnable()
+        public override void ActivateTool(EditorEventWrapper wrapper, IEnumerable<Vertex> vertices, SceneView sceneView, Vector2 mousePos)
         {
-            Debug.Log("enab");
-        }
+            var closest = Model
+                .Vertices
+                .Select(_vertex =>
+                {
+                    var vertexScreenPoint = sceneView.camera.WorldToScreenPoint(_vertex.Position);
+                    var sqrDistance = (mousePos - (Vector2)vertexScreenPoint).sqrMagnitude;
 
-        private void OnDisable()
-        {
+                    return new Tuple<Vertex, float>(_vertex, sqrDistance);
+                })
+                .OrderBy(_pair => _pair.Item2)
+                .FirstOrDefault();
 
-            Debug.Log("ds");
-        }
+            if (null == closest)
+                return;
 
-        [MenuItem(c_windowMenuItem)]
-        private static void Create()
-        {
-            var window = GetWindow<ModelingWindow>();
-
-            window.titleContent.text = c_windowTitle;
-
-            window.Show();
-        }
-
-        private void OnInspectorUpdate() => Repaint();
-
-        private void OnGUI()
-        {
-
-        }
-
-        private void OnFocus() =>
-            OnSelectionChange();
-
-        private void OnSelectionChange()
-        {
-
+            if(wrapper.Consume())
+                Selection.objects = Enumerable.Repeat(closest.Item1.gameObject, 1).ToArray();
         }
     }
 }
