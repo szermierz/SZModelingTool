@@ -8,6 +8,12 @@ namespace SZ.ModelingTool
 {
     public class ModelingToolBehaviour : MonoBehaviour
     {
+        #region Accessors
+
+        public virtual bool Selected => Selection.objects.Any(_object => (_object as GameObject)?.GetComponents<Component>()?.Any(_component => _component == this) ?? false);
+
+        #endregion
+
         #region PostProcess
 
         [PostProcessScene]

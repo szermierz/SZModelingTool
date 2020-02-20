@@ -20,12 +20,14 @@ namespace SZ.ModelingTool
 
         public override void DrawToolGizmo(ModelingToolBehaviour drawGizmo, SceneView sceneView, Vector2 mousePos)
         {
+            base.DrawToolGizmo(drawGizmo, sceneView, mousePos);
+
             var vertex = drawGizmo as Vertex;
             if (!vertex)
                 return;
 
             var prevColor = Gizmos.color;
-            var destColor = Selection.objects.Any(_gameObject => _gameObject == drawGizmo.gameObject) ? SelectedSphereColor : SphereColor;
+            var destColor = vertex.Selected ? SelectedSphereColor : SphereColor;
 
             Gizmos.color = destColor;
             Gizmos.DrawSphere(vertex.Position, SphereRadius);

@@ -11,6 +11,7 @@ namespace SZ.ModelingTool
     {
         public Toolset Toolset => GetComponentInChildren<Toolset>();
         public IEnumerable<Vertex> Vertices => GetComponentsInChildren<Vertex>();
+        public IEnumerable<Face> Faces => GetComponentsInChildren<Face>();
 
         protected virtual bool IsEditor => Application.isEditor && !Application.isPlaying;
 

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,8 +10,14 @@ namespace SZ.ModelingTool
         private Color m_faceColor = default;
         private Color FaceColor => m_faceColor;
 
+        [SerializeField]
+        private Color m_selectedFaceColor = default;
+        private Color SelectedFaceColor => m_selectedFaceColor;
+
         public override void DrawToolGizmo(ModelingToolBehaviour drawGizmo, SceneView sceneView, Vector2 mousePos)
         {
+            base.DrawToolGizmo(drawGizmo, sceneView, mousePos);
+
             var face = drawGizmo as Face;
             if (!face)
                 return;
@@ -21,7 +26,7 @@ namespace SZ.ModelingTool
                 return;
 
             var prevColor = Handles.color;
-            Handles.color = FaceColor;
+            Handles.color = face.Selected ? SelectedFaceColor : FaceColor;
 
             Handles.DrawAAConvexPolygon(face.Vertices.Select(vertex => vertex.Position).ToArray());
 

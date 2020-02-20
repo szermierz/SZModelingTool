@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace SZ.ModelingTool
@@ -8,6 +9,8 @@ namespace SZ.ModelingTool
         public Vector3 Position => Vector3.zero;
 
         public Vertex[] Vertices = default;
+
+        public override bool Selected => Vertices.All(_vertex => _vertex.Selected);
 
         public Model Model => GetComponentInParent<Model>();
 

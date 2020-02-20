@@ -10,6 +10,8 @@ namespace SZ.ModelingTool
     {
         public override void ActivateTool(EditorEventWrapper wrapper, IEnumerable<Vertex> vertices, SceneView sceneView, Vector2 mousePos)
         {
+            base.ActivateTool(wrapper, vertices, sceneView, mousePos);
+
             var closest = Model
                 .Vertices
                 .Select(_vertex =>

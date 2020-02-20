@@ -12,7 +12,7 @@ namespace SZ.ModelingTool
 
         public void NotifyEvent(EditorEventWrapper wrapper, SceneView sceneView, IEnumerable<Vertex> vertices)
         {
-            Debug.Log($"{wrapper.EventType}, {wrapper.MouseButton}, {wrapper.KeyCode}");
+            //Debug.Log($"{wrapper.EventType}, {wrapper.MouseButton}, {wrapper.KeyCode}");
 
             foreach (var toolsetGroup in ToolsetGroups)
                 toolsetGroup.NotifyEvent(wrapper, sceneView, vertices);
