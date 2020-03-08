@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,12 +16,19 @@ namespace SZ.ModelingTool
         private EventType m_keyboardEventType = default;
         private EventType KeyboardEventType => m_keyboardEventType;
 
+        [SerializeField]
+        private EventModifiers[] m_requiredModifiers = default;
+        private IEnumerable<EventModifiers> RequiredModifiers => m_requiredModifiers ?? Enumerable.Empty<EventModifiers>();
+
         protected override void OnEvent(EditorEventWrapper wrapper, SceneView sceneView, IEnumerable<Vertex> vertices)
         {
             if (KeyboardEventType != wrapper.EventType)
                 return;
 
             if (KeyCode != wrapper.KeyCode)
+                return;
+
+            if (RequiredModifiers.Any() && !RequiredModifiers.All(_modifier => wrapper.Event.modifiers.HasFlag(_modifier)))
                 return;
 
             foreach (var tool in Tools)

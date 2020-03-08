@@ -9,6 +9,10 @@ namespace SZ.ModelingTool
     [ExecuteInEditMode]
     public class Model : ModelingToolBehaviour
     {
+        [SerializeField]
+        private string m_modelName = string.Empty;
+        public virtual string ModelName => m_modelName;
+        
         public Toolset Toolset => GetComponentInChildren<Toolset>();
         public IEnumerable<Vertex> Vertices => GetComponentsInChildren<Vertex>();
         public IEnumerable<Face> Faces => GetComponentsInChildren<Face>();
@@ -41,16 +45,27 @@ namespace SZ.ModelingTool
                 .objects
                 .Select(_selectedObject => _selectedObject as GameObject)
                 .Where(_selectedGameObject => _selectedGameObject)
-                .Select(_selectedGameObject => _selectedGameObject.GetComponent<Vertex>())
+                .SelectMany(_selectedGameObject => _selectedGameObject.GetComponentsInChildren<Vertex>().Concat(Enumerable.Repeat(_selectedGameObject.GetComponent<Vertex>(), 1)))
+                .Where(_vertex => _vertex)
+                .Distinct()
                 .ToArray();
 
-            Utilities.EditorTools.Hidden = selectedVertices.Any();
+            //Utilities.EditorTools.Hidden = selectedVertices.Any();
             Toolset.NotifyEvent(new EditorEventWrapper(Event.current), sceneView, selectedVertices);
         }
 
         public virtual void DrawModelGizmos(ModelingToolBehaviour drawGizmo)
         {
             Toolset.DrawModelGizmo(drawGizmo);
+        }
+
+        private void OnValidate()
+        {
+            if(string.IsNullOrEmpty(m_modelName))
+            {
+                m_modelName = name;
+                EditorUtility.SetDirty(this);
+            }
         }
     }
 }

@@ -10,7 +10,21 @@ namespace SZ.ModelingTool
     {
         #region Accessors
 
-        public virtual bool Selected => Selection.objects.Any(_object => (_object as GameObject)?.GetComponents<Component>()?.Any(_component => _component == this) ?? false);
+        public virtual bool Selected
+        {
+            get
+            {
+                var gameObjects = Selection.objects.OfType<GameObject>();
+                var possibles = gameObjects.SelectMany(_gameObject => _gameObject.GetComponentsInChildren(GetType()));
+                if (possibles.Contains(this))
+                    return true;
+
+                if (gameObjects.Any(_gameObject => _gameObject.GetComponent(GetType()) == this))
+                    return true;
+
+                return false;
+            }
+        }
 
         #endregion
 

@@ -30,6 +30,10 @@ namespace SZ.ModelingTool
 
             Handles.DrawAAConvexPolygon(face.Vertices.Select(vertex => vertex.Position).ToArray());
 
+            Handles.color = Color.black;
+            for (int i = 0; i < 3; ++i)
+                Handles.DrawLine(face.Vertices[i].Position, face.Vertices[(i+1)%3].Position);
+
             Handles.color = prevColor;
         }
     }
