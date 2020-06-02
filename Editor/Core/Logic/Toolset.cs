@@ -13,9 +13,6 @@ namespace SZ.ModelingTool
 
         public void NotifyEvent(EditorEventWrapper wrapper, SceneView sceneView, IEnumerable<Vertex> vertices)
         {
-            if(ShouldLog(wrapper.EventType))
-                Debug.Log($"{wrapper.EventType}, {wrapper.MouseButton}, {wrapper.KeyCode}");
-
             foreach (var toolsetGroup in ToolsetGroups)
                 toolsetGroup.NotifyEvent(wrapper, sceneView, vertices);
 
@@ -40,38 +37,6 @@ namespace SZ.ModelingTool
             //    }
             //    e.Use();
             //}
-        }
-
-        private bool ShouldLog(EventType eventType)
-        {
-            switch (eventType)
-            {
-                case EventType.MouseMove:
-                case EventType.MouseDrag:
-                case EventType.Repaint:
-                case EventType.Layout:
-                case EventType.DragUpdated:
-                case EventType.DragPerform:
-                case EventType.DragExited:
-                case EventType.Ignore:
-                case EventType.Used:
-                case EventType.ValidateCommand:
-                case EventType.ExecuteCommand:
-                case EventType.MouseEnterWindow:
-                case EventType.MouseLeaveWindow:
-                    return false;
-
-                case EventType.MouseDown:
-                case EventType.MouseUp:
-                case EventType.KeyDown:
-                case EventType.KeyUp:
-                case EventType.ScrollWheel:
-                case EventType.ContextClick:
-                    return true;
-
-                default:
-                    return true;
-            }
         }
 
         public void DrawModelGizmo(ModelingToolBehaviour drawGizmo)
