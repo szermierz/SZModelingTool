@@ -18,7 +18,23 @@ namespace SZ.ModelingTool
             set => m_vertices = value;
         }
 
-        public override bool Selected => Vertices.All(_vertex => _vertex.Selected);
+        public override bool Selected => LocallySelected || Vertices.All(_vertex => _vertex.Selected);
+
+        public virtual bool LocallySelected
+        {
+            get
+            {
+                var gameObjects = Selection.objects.OfType<GameObject>();
+                var possibles = gameObjects.SelectMany(_gameObject => _gameObject.GetComponentsInChildren(GetType()));
+                if (possibles.Contains(this))
+                    return true;
+
+                if (gameObjects.Any(_gameObject => _gameObject.GetComponent(GetType()) == this))
+                    return true;
+
+                return false;
+            }
+        }
 
         public Model Model => GetComponentInParent<Model>();
 

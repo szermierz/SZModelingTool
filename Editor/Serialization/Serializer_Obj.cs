@@ -15,6 +15,9 @@ namespace SZ.ModelingTool
             builder.AppendLine($"# SZ.ModelingTool {model.ModelName}");
             builder.AppendLine($"");
 
+            builder.AppendLine($"g {model.ModelName}");
+            builder.AppendLine($"");
+
             var vertices = model.Vertices.ToArray();
             var faces = model.Faces.ToArray();
 
