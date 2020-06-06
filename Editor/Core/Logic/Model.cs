@@ -24,8 +24,8 @@ namespace SZ.ModelingTool
             if (!IsEditor)
                 return;
 
-            SceneView.onSceneGUIDelegate -= OnSceneGUI;
-            SceneView.onSceneGUIDelegate += OnSceneGUI;
+            SceneView.duringSceneGui -= OnSceneGUI;
+            SceneView.duringSceneGui += OnSceneGUI;
         }
 
         protected virtual void OnDisable()
@@ -33,7 +33,7 @@ namespace SZ.ModelingTool
             if (!IsEditor)
                 return;
 
-            SceneView.onSceneGUIDelegate -= OnSceneGUI;
+            SceneView.duringSceneGui -= OnSceneGUI;
         }
 
         protected virtual void OnSceneGUI(SceneView sceneView)
