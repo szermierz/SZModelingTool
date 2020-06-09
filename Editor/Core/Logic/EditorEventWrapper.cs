@@ -1,15 +1,18 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace SZ.ModelingTool
 {
     public sealed class EditorEventWrapper
     {
-        public EditorEventWrapper(Event _event)
+        public EditorEventWrapper(Event _event, SceneView _sceneView)
         {
             Event = _event;
+            SceneView = _sceneView;
         }
 
         public readonly Event Event;
+        public readonly SceneView SceneView;
 
         public bool IsConsumed { get; private set; }
 
@@ -28,7 +31,7 @@ namespace SZ.ModelingTool
 
         public int MouseButton => Event.button;
 
-        public Vector2 MousePosition => Event.mousePosition;
+        public Vector2 MousePosition => new Vector2(Event.mousePosition.x, SceneView.camera.pixelHeight - Event.mousePosition.y);
 
         public KeyCode KeyCode => Event.keyCode;
     }

@@ -49,9 +49,9 @@ namespace SZ.ModelingTool
                 .Where(_vertex => _vertex)
                 .Distinct()
                 .ToArray();
-
+            
             //Utilities.EditorTools.Hidden = selectedVertices.Any();
-            Toolset.NotifyEvent(new EditorEventWrapper(Event.current), sceneView, selectedVertices);
+            Toolset.NotifyEvent(new EditorEventWrapper(Event.current, sceneView), sceneView, selectedVertices);
         }
 
         public virtual void DrawModelGizmos(ModelingToolBehaviour drawGizmo)
