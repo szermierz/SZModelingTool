@@ -27,7 +27,7 @@ namespace SZ.ModelingTool
             if (face.Vertices.Length != 3)
                 return;
 
-            bool dirty = face;
+            bool dirty = false;
             
             if(!m_faces.ContainsKey(face))
             {
