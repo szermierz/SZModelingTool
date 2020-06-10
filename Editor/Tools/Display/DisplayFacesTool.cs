@@ -14,7 +14,12 @@ namespace SZ.ModelingTool
         [SerializeField]
         private MeshFilter m_selectedMesh = default;
 
+        [SerializeField]
+        private float m_redrawInterval = 0.0f;
+
         private Dictionary<Face, FaceDesc> m_faces = new Dictionary<Face, FaceDesc>();
+
+        private DateTime? m_nextRedraw = null;
 
         public override void DrawToolGizmo(ModelingToolBehaviour drawGizmo, SceneView sceneView, Vector2 mousePos)
         {
@@ -40,8 +45,14 @@ namespace SZ.ModelingTool
                 m_faces[face] = FaceDesc.FromFace(face);
             }
 
-            if (dirty)
+            if(m_nextRedraw.HasValue && m_nextRedraw <= DateTime.Now)
+                m_nextRedraw = null;
+
+            if (dirty && null == m_nextRedraw)
+            {
                 Redraw();
+                m_nextRedraw = DateTime.Now + TimeSpan.FromSeconds(m_redrawInterval);
+            }
         }
 
         private static List<Face> _facesBuffer = new List<Face>();
