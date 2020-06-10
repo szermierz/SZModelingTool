@@ -11,6 +11,9 @@ namespace SZ.ModelingTool
         [SerializeField]
         private bool m_addToSelection = false;
 
+        [SerializeField]
+        private bool m_deselectIfSelected = true;
+
         public override void ActivateTool(EditorEventWrapper wrapper, IEnumerable<Vertex> vertices, SceneView sceneView, Vector2 mousePos)
         {
             base.ActivateTool(wrapper, vertices, sceneView, mousePos);
@@ -33,12 +36,19 @@ namespace SZ.ModelingTool
 
             if (wrapper.Consume())
             {
-                var objects = Enumerable.Repeat((UnityEngine.Object)closest.Item1.gameObject, 1);
+                var obj = (UnityEngine.Object)closest.Item1.gameObject;
+                var isSelected = Selection.objects.Contains(obj);
+                IEnumerable<UnityEngine.Object> targetSelection = Selection.objects;
 
                 if (m_addToSelection)
-                    objects = Selection.objects.Concat(objects);
+                    targetSelection = targetSelection.Concat(Enumerable.Repeat(obj, 1));
+                else
+                    targetSelection = Enumerable.Repeat(obj, 1);
 
-                Selection.objects = objects.ToArray();
+                if (m_deselectIfSelected && isSelected)
+                    targetSelection = targetSelection.Where(_object => obj != _object);
+
+                Selection.objects = targetSelection.ToArray();
             }
         }
     }
