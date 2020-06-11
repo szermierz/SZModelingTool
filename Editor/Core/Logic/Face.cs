@@ -18,7 +18,7 @@ namespace SZ.ModelingTool
             set => m_vertices = value;
         }
 
-        public override bool Selected => LocallySelected || Vertices.All(_vertex => _vertex.Selected);
+        public override bool Selected => LocallySelected || Vertices.All(_vertex => _vertex ? _vertex.Selected : true);
 
         public virtual bool LocallySelected
         {

@@ -74,11 +74,9 @@ namespace SZ.ModelingTool
             var vertices = _facesBuffer
                 .SelectMany(_face =>
                 {
-                    return Vertices(
-                        _face.Vertices[0].Position,
-                        _face.Vertices[1].Position,
-                        _face.Vertices[2].Position
-                        );
+                    return _face
+                        .Vertices
+                        .Select(_vertex => _vertex ? _vertex.Position : Vector3.zero);
                 })
                 .ToArray();
 
@@ -87,6 +85,7 @@ namespace SZ.ModelingTool
             for (int i = 0; i < vertices.Length; i += 3)
             {
                 var normal = Vector3.Cross(vertices[i + 1] - vertices[i + 0], vertices[i + 2] - vertices[i + 0]);
+
                 normals[i + 0] = normal;
                 normals[i + 1] = normal;
                 normals[i + 2] = normal;
@@ -100,13 +99,6 @@ namespace SZ.ModelingTool
             destMesh.mesh = mesh;
         }
 
-        private static IEnumerable<Vector3> Vertices(Vector3 v1, Vector3 v2, Vector3 v3)
-        {
-            yield return v1;
-            yield return v2;
-            yield return v3;
-        }
-
         private struct FaceDesc
         {
             public Vector3[] Positions;
@@ -115,9 +107,11 @@ namespace SZ.ModelingTool
             public bool Equals(Face face)
             {
                 if (face.Vertices == null)
-                    throw new ArgumentNullException("Invalid face");
+                    return false;
                 if (face.Vertices.Length != 3)
-                    throw new ArgumentException("Invalid face");
+                    return false;
+                if (face.Vertices.Any(_vertex => !_vertex))
+                    return false;
 
                 if (face.Selected != Selected)
                     return false;
@@ -137,7 +131,7 @@ namespace SZ.ModelingTool
                 return new FaceDesc()
                 {
                     Selected = face.Selected,
-                    Positions = face.Vertices.Select(_vertex => _vertex.Position).ToArray(),
+                    Positions = face.Vertices.Select(_vertex => _vertex ? _vertex.Position : Vector3.zero).ToArray(),
                 };
             }
         }

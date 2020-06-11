@@ -1,0 +1,8 @@
+{
+    "name": "SZModelingTool_Effects",
+    "references": [
+		"SZModelingTool_Core"
+	],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}

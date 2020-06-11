@@ -7,7 +7,11 @@ namespace SZ.ModelingTool
     {
         public Model Model => GetComponentInParent<Model>();
 
-        public Vector3 Position => transform.position;
+        public Vector3 Position
+        {
+            get => transform.position;
+            set => transform.position = value;
+        }
 
         [DrawGizmo(GizmoType.InSelectionHierarchy | GizmoType.NotInSelectionHierarchy)]
         private static void DrawEditorGizmos(Vertex vertex, GizmoType gizmoType)
