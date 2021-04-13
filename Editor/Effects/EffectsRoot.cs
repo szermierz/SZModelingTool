@@ -38,11 +38,22 @@ namespace SZ.ModelingTool
 
         public IEnumerable<EffectBase> Effects => GetComponents<EffectBase>();
 
-        private Dictionary<Vertex, Vertex> m_vertices = null;
-        private Dictionary<Face, Face> m_faces = null;
+        public Dictionary<Vertex, Vertex> OldByNewVertices { get; private set; }
+        public Dictionary<Vertex, Vertex> NewByOldVertices { get; private set; }
+        public Dictionary<Face, Face> OldByNewFaces { get; private set; }
+        public Dictionary<Face, Face> NewByOldFaces { get; private set; }
+        public IEnumerable<Vertex> OldVertices => OldByNewVertices.Keys;
+        public IEnumerable<Vertex> NewVertices => OldByNewVertices.Values;
+        public IEnumerable<Face> OldFaces => OldByNewFaces.Keys;
+        public IEnumerable<Face> NewFaces => OldByNewFaces.Values;
 
         public void RunEffects()
         {
+            var sourceVericesRootActive = SourceVerticesRoot.activeSelf;
+            var sourceFacesRootActive = SourceFacesRoot.activeSelf;
+            var destVerticesRootActive = DestVerticesRoot.activeSelf;
+            var destFacesRootActive = DestFacesRoot.activeSelf;
+
             SourceVerticesRoot.SetActive(true);
             SourceFacesRoot.SetActive(true);
             DestVerticesRoot.SetActive(true);
@@ -50,8 +61,10 @@ namespace SZ.ModelingTool
 
             ClearDestination();
 
-            m_vertices = null;
-            m_faces = null;
+            OldByNewVertices = null;
+            NewByOldVertices = null;
+            OldByNewFaces = null;
+            NewByOldFaces = null;
 
             foreach (var effect in Effects)
                 effect.Run(this);
@@ -70,36 +83,48 @@ namespace SZ.ModelingTool
                 if (nextEffectsRoot)
                     nextEffectsRoot.RunEffects();
             }
+
+            SourceVerticesRoot.SetActive(sourceVericesRootActive);
+            SourceFacesRoot.SetActive(sourceFacesRootActive);
+            DestVerticesRoot.SetActive(destVerticesRootActive);
+            DestFacesRoot.SetActive(destFacesRootActive);
         }
 
-        public void CloneModel(out Dictionary<Vertex, Vertex> vertices, out Dictionary<Face, Face> faces)
+        public void CloneModel()
         {
-            if(null == m_vertices)
-                m_vertices = CloneModel<Vertex>(SourceVerticesRoot, DestVerticesRoot);
+            if (null == OldByNewVertices || null == NewByOldVertices)
+            {
+                CloneModel<Vertex>(SourceVerticesRoot, DestVerticesRoot, out var oldByNew, out var newByOld);
+                OldByNewVertices = oldByNew;
+                NewByOldVertices = newByOld;
+            }
 
-            if (null == m_faces)
-                m_faces = CloneModel<Face>(SourceFacesRoot, DestFacesRoot);
+            if (null == OldByNewFaces || null == NewByOldFaces)
+            {
+                CloneModel<Face>(SourceFacesRoot, DestFacesRoot, out var oldByNew, out var newByOld);
+                OldByNewFaces = oldByNew;
+                NewByOldFaces = newByOld;
+            }
 
-            foreach (var face in m_faces)
+            foreach (var face in OldByNewFaces)
             {
                 var newFace = face.Value;
 
                 for(int i = 0; i < newFace.Vertices.Length; ++i)
                 {
                     var oldVertex = newFace.Vertices[i];
-                    var newVertex = m_vertices.ContainsKey(oldVertex) ? m_vertices[oldVertex] : null;
+                    var newVertex = OldByNewVertices.ContainsKey(oldVertex) ? OldByNewVertices[oldVertex] : null;
                     newFace.Vertices[i] = newVertex;
                 }
             }
-
-            vertices = m_vertices;
-            faces = m_faces;
         }
 
-        private Dictionary<T, T> CloneModel<T>(GameObject root, GameObject dest)
+        private void CloneModel<T>(GameObject root, GameObject dest, out Dictionary<T, T> oldByNew, out Dictionary<T, T> newByOld)
             where T : Component
         {
-            var result = new Dictionary<T, T>();
+            oldByNew = new Dictionary<T, T>();
+            newByOld = new Dictionary<T, T>();
+
             var components = root.GetComponentsInChildren<T>();
 
             foreach (var component in components)
@@ -107,10 +132,9 @@ namespace SZ.ModelingTool
                 var newGameObject = Instantiate(component.gameObject, dest.transform);
                 var newComponent = newGameObject.GetComponent<T>();
 
-                result.Add(component, newComponent);
+                newByOld.Add(newComponent, component);
+                oldByNew.Add(component, newComponent);
             }
-
-            return result;
         }
 
         private void ClearDestination()

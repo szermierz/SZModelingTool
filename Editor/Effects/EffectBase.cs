@@ -6,36 +6,44 @@ namespace SZ.ModelingTool
     {
         protected EffectsRoot EffectsRoot { get; private set; }
 
-        private Dictionary<Vertex, Vertex> m_vertices = null;
-        private Dictionary<Face, Face> m_faces = null;
+        private Dictionary<Vertex, Vertex> m_oldByNewVertices = null;
+        private Dictionary<Vertex, Vertex> m_newByOldVertices = null;
+        private Dictionary<Face, Face> m_oldByNewFaces = null;
+        private Dictionary<Face, Face> m_newByOldFaces = null;
 
-        protected Dictionary<Vertex, Vertex> Vertices
+        protected Dictionary<Vertex, Vertex> OldByNewVertices => GetCachedDictionary(ref m_oldByNewVertices);
+        protected Dictionary<Vertex, Vertex> NewByOldVertices => GetCachedDictionary(ref m_newByOldVertices);
+        protected Dictionary<Face, Face> OldByNewFaces => GetCachedDictionary(ref m_oldByNewFaces);
+        protected Dictionary<Face, Face> NewByOldFaces => GetCachedDictionary(ref m_newByOldFaces);
+        protected IEnumerable<Vertex> OldVertices => OldByNewVertices.Keys;
+        protected IEnumerable<Vertex> NewVertices => OldByNewVertices.Values;
+        protected IEnumerable<Face> OldFaces => OldByNewFaces.Keys;
+        protected IEnumerable<Face> NewFaces => OldByNewFaces.Values;
+
+        protected Dictionary<T, T> GetCachedDictionary<T>(ref Dictionary<T, T> cache)
         {
-            get
-            {
-                if (null == m_vertices)
-                    EffectsRoot.CloneModel(out m_vertices, out m_faces);
+            if (null == cache)
+                EnsureCloneModel();
 
-                return m_vertices;
-            }
+            return cache;
         }
 
-        protected Dictionary<Face, Face> Faces
+        protected void EnsureCloneModel()
         {
-            get
-            {
-                if (null == m_faces)
-                    EffectsRoot.CloneModel(out m_vertices, out m_faces);
-
-                return m_faces;
-            }
+            EffectsRoot.CloneModel();
+            m_oldByNewVertices = EffectsRoot.OldByNewVertices;
+            m_newByOldVertices = EffectsRoot.NewByOldVertices;
+            m_oldByNewFaces = EffectsRoot.OldByNewFaces;
+            m_newByOldFaces = EffectsRoot.NewByOldFaces;
         }
 
         public void Run(EffectsRoot effectsRoot)
         {
             EffectsRoot = effectsRoot;
-            m_vertices = null;
-            m_faces = null;
+            m_oldByNewVertices = null;
+            m_newByOldVertices = null;
+            m_oldByNewFaces = null;
+            m_newByOldFaces = null;
 
             EffectImplementation();
         }
