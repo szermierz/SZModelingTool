@@ -314,10 +314,22 @@ namespace SZ.ModelingTool
                     }
                 }
 
+                // Remove invalid faces
+                foreach (var face in faces)
+                {
+                    if(face.Vertices[0] == face.Vertices[1]
+                       || face.Vertices[0] == face.Vertices[2]
+                       || face.Vertices[1] == face.Vertices[2])
+                        DestroyImmediate(face.gameObject);
+                }
+
                 // Gather used vertices
                 var usedVertices = new HashSet<Vertex>();
                 foreach (var face in faces)
                 {
+                    if (!face)
+                        continue;
+
                     foreach (var vertex in face.Vertices)
                         usedVertices.Add(vertex);
                 }

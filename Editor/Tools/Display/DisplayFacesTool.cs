@@ -17,6 +17,9 @@ namespace SZ.ModelingTool
         [SerializeField]
         private float m_redrawInterval = 0.0f;
 
+        [SerializeField]
+        private bool m_drawEdges;
+
         private Dictionary<Face, FaceDesc> m_faces = new Dictionary<Face, FaceDesc>();
 
         private DateTime? m_nextRedraw = null;
@@ -52,6 +55,14 @@ namespace SZ.ModelingTool
             {
                 Redraw();
                 m_nextRedraw = DateTime.Now + TimeSpan.FromSeconds(m_redrawInterval);
+            }
+
+            if (m_drawEdges)
+            {
+                Gizmos.color = Color.blue;
+                Gizmos.DrawLine(face.Vertices[0].Position, face.Vertices[1].Position);
+                Gizmos.DrawLine(face.Vertices[0].Position, face.Vertices[2].Position);
+                Gizmos.DrawLine(face.Vertices[1].Position, face.Vertices[2].Position);
             }
         }
 
