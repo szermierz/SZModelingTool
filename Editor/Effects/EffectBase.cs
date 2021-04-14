@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace SZ.ModelingTool
 {
+    [RequireComponent(typeof(EffectsRoot))]
     public abstract class EffectBase : ModelingToolBehaviour
     {
         protected EffectsRoot EffectsRoot { get; private set; }
