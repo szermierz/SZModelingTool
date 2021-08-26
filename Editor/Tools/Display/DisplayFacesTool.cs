@@ -32,7 +32,7 @@ namespace SZ.ModelingTool
             if (!face)
                 return;
 
-            if (face.Vertices.Length != 3)
+            if (face.Vertices.Length != 3 || face.Vertices.Any(_vertex => !_vertex))
                 return;
 
             bool dirty = false;
