@@ -71,7 +71,7 @@ namespace SZ.ModelingTool
                     else
                     {
                         var x = -m_c / m_a;
-                        var y = (a * x + c) / (-m_b);
+                        var y = (a * x + c) / (-b);
                         return new Vector2(x, y);
                     }
                 }
@@ -119,31 +119,33 @@ namespace SZ.ModelingTool
                 if (!m_enabled)
                     return;
 
-                var color = Gizmos.color;
-                Gizmos.color = m_gizmoLineColor;
-
                 if (Mathf.Abs(m_b) <= c_almostZero && Mathf.Abs(m_a) > c_almostZero)
                 {
                     var lineX = -m_c / m_a;
-                    Gizmos.DrawLine(new Vector3(lineX, 0.0f, m_gizmoLineRange.x), new Vector3(lineX, 0.0f, m_gizmoLineRange.y));
+                    var from = new Vector3(lineX, 0.0f, m_gizmoLineRange.x);
+                    var to = new Vector3(lineX, 0.0f, m_gizmoLineRange.y);
+                    Gizmos.color = m_gizmoLineColor;
+                    Gizmos.DrawLine(from, to);
                 }
                 else if (Mathf.Abs(m_b) > c_almostZero && Mathf.Abs(m_a) <= c_almostZero)
                 {
                     var lineY = -m_c / m_b;
-                    Gizmos.DrawLine(new Vector3(m_gizmoLineRange.x, 0.0f, lineY), new Vector3(m_gizmoLineRange.y, 0.0f, lineY));
+                    var from = new Vector3(m_gizmoLineRange.x, 0.0f, lineY);
+                    var to = new Vector3(m_gizmoLineRange.y, 0.0f, lineY);
+                    Gizmos.color = m_gizmoLineColor;
+                    Gizmos.DrawLine(from, to);
                 }
                 else if(Mathf.Abs(m_b) > c_almostZero && Mathf.Abs(m_a) > c_almostZero)
                 {
-                    float x1 = m_gizmoLineRange.x;
-                    float x2 = m_gizmoLineRange.y;
-                    float y1 = (m_a * x1 + m_c) / (-m_b);
-                    float y2 = (m_a * x2 + m_c) / (-m_b);
+                    var x1 = m_gizmoLineRange.x;
+                    var x2 = m_gizmoLineRange.y;
+                    var y1 = (m_a * x1 + m_c) / (-m_b);
+                    var y2 = (m_a * x2 + m_c) / (-m_b);
                     var from = new Vector3(x1, 0.0f, y1);
                     var to = new Vector3(x2, 0.0f, y2);
-                    Gizmos.DrawRay(from, to - from);
+                    Gizmos.color = m_gizmoLineColor;
+                    Gizmos.DrawLine(from, to);
                 }
-
-                Gizmos.color = color;
             }
         }
 
