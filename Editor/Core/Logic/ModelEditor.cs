@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -32,35 +33,47 @@ namespace SZ.ModelingTool
                 .Where(_serializer => null != _serializer)
                 .ToArray();
 
-            if (serializers.Length != 1)
+            ISerializer noParent = null;
+            var parenthood = new Dictionary<ISerializer, ISerializer>();
+            foreach(var serializer in serializers)
             {
-                Debug.LogError($"Found {serializers.Length} serializers!");
-                return;
+                if(serializer.ParentSerializer is { } parent)
+                {
+                    if (parenthood.ContainsKey(parent))
+                        throw new Exception(
+                            $"Duplicated parent serializers: (parent) {GetSerializerName(parent)}, {GetSerializerName(parenthood[parent])}, {GetSerializerName(serializer)}");
+
+                    parenthood.Add(parent, serializer);
+                }
+                else
+                {
+                    if(null != noParent)
+                        throw new Exception($"Duplicated root serializers: {GetSerializerName(noParent)}, {GetSerializerName(serializer)}");
+                    
+                    noParent = serializer;
+                }
             }
 
-            var serializer = serializers.Single();
+            if (null == noParent)
+                throw new Exception($"Failed to find root serializer!");
 
-            var serializedModel = serializer.Serialize(model);
-            if (string.IsNullOrEmpty(serializedModel))
+            var serializedModel = string.Empty;
+            for(var serializer = noParent; null != serializer; _ = parenthood.TryGetValue(serializer, out serializer))
             {
-                Debug.LogError($"Couldn't serialize model!");
-                return;
+                serializedModel = serializer.Serialize(model, serializedModel);
             }
 
-            var path = EditorUtility.SaveFilePanelInProject("Save model", model.ModelName, serializer.DefaultExtension, "Choose where to save model");
-            if (string.IsNullOrEmpty(path))
-                return;
-
-            try
+            static string GetSerializerName(ISerializer serializer)
             {
-                File.WriteAllText(path, serializedModel);
-            }
-            catch(Exception e)
-            {
-                Debug.LogException(e);
-            }
+                if (null == serializer)
+                    return "null";
 
-            AssetDatabase.Refresh();
+                var result = serializer.GetType().Name;
+                if (serializer is MonoBehaviour component)
+                    result = $"{result}: {component.name}";
+
+                return result;
+            }
         }
     }
 }

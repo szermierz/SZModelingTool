@@ -76,9 +76,9 @@ namespace SZ.ModelingTool
 
             if(m_triggerNextEffects)
             {
-                var nextEffectsRoot = DestVerticesRoot.GetComponent<EffectsRoot>();
+                var nextEffectsRoot = DestVerticesRoot.GetComponentInParent<EffectsRoot>();
                 if(!nextEffectsRoot)
-                    nextEffectsRoot = DestFacesRoot.GetComponent<EffectsRoot>();
+                    nextEffectsRoot = DestFacesRoot.GetComponentInParent<EffectsRoot>();
 
                 if (nextEffectsRoot)
                     nextEffectsRoot.RunEffects();
@@ -90,20 +90,36 @@ namespace SZ.ModelingTool
             DestFacesRoot.SetActive(destFacesRootActive);
         }
 
-        public void CloneModel()
+        public void CloneModel(bool cloneVertices, bool cloneFaces)
         {
-            if (null == OldByNewVertices || null == NewByOldVertices)
+            if (cloneVertices)
             {
-                CloneModel<Vertex>(SourceVerticesRoot, DestVerticesRoot, out var oldByNew, out var newByOld);
-                OldByNewVertices = oldByNew;
-                NewByOldVertices = newByOld;
+                if (null == OldByNewVertices || null == NewByOldVertices)
+                {
+                    CloneModel<Vertex>(SourceVerticesRoot, DestVerticesRoot, out var oldByNew, out var newByOld);
+                    OldByNewVertices = oldByNew;
+                    NewByOldVertices = newByOld;
+                }
+            }
+            else
+            {
+                OldByNewVertices ??= new();
+                NewByOldVertices ??= new();
             }
 
-            if (null == OldByNewFaces || null == NewByOldFaces)
+            if (cloneFaces)
             {
-                CloneModel<Face>(SourceFacesRoot, DestFacesRoot, out var oldByNew, out var newByOld);
-                OldByNewFaces = oldByNew;
-                NewByOldFaces = newByOld;
+                if (null == OldByNewFaces || null == NewByOldFaces)
+                {
+                    CloneModel<Face>(SourceFacesRoot, DestFacesRoot, out var oldByNew, out var newByOld);
+                    OldByNewFaces = oldByNew;
+                    NewByOldFaces = newByOld;
+                }
+            }
+            else
+            {
+                OldByNewFaces ??= new();
+                NewByOldFaces ??= new();
             }
 
             foreach (var face in OldByNewFaces)

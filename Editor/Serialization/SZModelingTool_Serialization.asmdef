@@ -1,8 +1,17 @@
 {
     "name": "SZModelingTool_Serialization",
+    "rootNamespace": "",
     "references": [
-		"SZModelingTool_Core"
-	],
+        "SZModelingTool_Core",
+        "SZModelingTool_Effects"
+    ],
     "includePlatforms": [],
-    "excludePlatforms": []
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

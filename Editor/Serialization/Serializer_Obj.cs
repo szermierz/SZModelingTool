@@ -8,9 +8,7 @@ namespace SZ.ModelingTool
     {
         public bool SeparateFaces = false;
 
-        public string DefaultExtension => "obj";
-
-        public string Serialize(Model model)
+        public string Serialize(Model model, string _)
         {
             StringBuilder builder = new StringBuilder();
 

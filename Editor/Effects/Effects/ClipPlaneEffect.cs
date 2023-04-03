@@ -154,7 +154,7 @@ namespace SZ.ModelingTool
         
         protected override void EffectImplementation()
         {
-            EnsureCloneModel();
+            EnsureCloneModel(true, true);
 
             var toDiscard = new List<Face>();
 
