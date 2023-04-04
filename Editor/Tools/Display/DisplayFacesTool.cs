@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace SZ.ModelingTool
 {
+    [ExecuteInEditMode]
     public class DisplayFacesTool : ToolBase
     {
         [SerializeField]
@@ -24,6 +25,20 @@ namespace SZ.ModelingTool
 
         private DateTime? m_nextRedraw = null;
 
+        private bool m_dirty = false;
+
+        private void OnEnable()
+        {
+            m_nonSelectedMesh.gameObject.SetActive(true);
+            m_selectedMesh.gameObject.SetActive(true);
+        }
+
+        private void OnDisable()
+        {
+            m_nonSelectedMesh.gameObject.SetActive(false);
+            m_selectedMesh.gameObject.SetActive(false);
+        }
+
         public override void DrawToolGizmo(ModelingToolBehaviour drawGizmo, SceneView sceneView, Vector2 mousePos)
         {
             base.DrawToolGizmo(drawGizmo, sceneView, mousePos);
@@ -35,25 +50,30 @@ namespace SZ.ModelingTool
             if (face.Vertices.Length != 3 || face.Vertices.Any(_vertex => !_vertex))
                 return;
 
-            bool dirty = false;
-            
-            if(!m_faces.ContainsKey(face))
+            if(face.IsDestroying)
             {
-                dirty = true;
+                m_dirty = true;
+                m_faces.Remove(face);
+            }
+            else if(!m_faces.ContainsKey(face))
+            {
+                m_dirty = true;
                 m_faces.Add(face, FaceDesc.FromFace(face));
             }
             else if(!m_faces[face].Equals(face))
             {
-                dirty = true;
+                m_dirty = true;
                 m_faces[face] = FaceDesc.FromFace(face);
             }
 
             if(m_nextRedraw.HasValue && m_nextRedraw <= DateTime.Now)
                 m_nextRedraw = null;
 
-            if (dirty && null == m_nextRedraw)
+            if (m_dirty && null == m_nextRedraw)
             {
                 Redraw();
+
+                m_dirty = false;
                 m_nextRedraw = DateTime.Now + TimeSpan.FromSeconds(m_redrawInterval);
             }
 

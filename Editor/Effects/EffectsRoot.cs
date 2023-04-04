@@ -146,6 +146,9 @@ namespace SZ.ModelingTool
             foreach (var component in components)
             {
                 var newGameObject = Instantiate(component.gameObject, dest.transform);
+                newGameObject.transform.position = component.transform.position;
+                newGameObject.transform.rotation = component.transform.rotation;
+                
                 var newComponent = newGameObject.GetComponent<T>();
 
                 newByOld.Add(newComponent, component);

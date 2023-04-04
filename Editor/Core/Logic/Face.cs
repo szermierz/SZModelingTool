@@ -6,9 +6,12 @@ using UnityEngine;
 
 namespace SZ.ModelingTool
 {
+    [ExecuteInEditMode]
     public class Face : ModelingToolBehaviour
     {
         public Vector3 Position => Vector3.zero;
+
+        public bool IsDestroying { get; private set; } = false;
 
         [SerializeField]
         private Vertex[] m_vertices = default;
@@ -37,6 +40,12 @@ namespace SZ.ModelingTool
         }
 
         public Model Model => GetComponentInParent<Model>();
+
+        private void OnDestroy()
+        {
+            IsDestroying = true;
+            DrawEditorGizmos(this, GizmoType.NonSelected);
+        }
 
         [DrawGizmo(GizmoType.InSelectionHierarchy | GizmoType.NotInSelectionHierarchy)]
         private static void DrawEditorGizmos(Face face, GizmoType gizmoType)

@@ -213,7 +213,10 @@ namespace SZ.ModelingTool
 
         private Face FindSingleFace()
         {
-            var faces = EffectsRoot.SourceFacesRoot.GetComponentsInChildren<Face>();
+            var faces = EffectsRoot.SourceFacesRoot.GetComponentsInChildren<Face>(includeInactive: false);
+            if(!faces.Any())
+                faces = EffectsRoot.SourceFacesRoot.GetComponentsInChildren<Face>(includeInactive: true);
+
             var singleFace = faces.FirstOrDefault();
             if (default == singleFace)
                 throw new Exception("Failed to find a single face");
