@@ -88,6 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ab79eb8435d8f04eb00c4ffffe8be87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_edgesRoot: {fileID: 0}
   m_vertexNameBase: V
 --- !u!1 &2032142319104777272
 GameObject:
@@ -374,7 +375,7 @@ GameObject:
   - component: {fileID: 8553541816643778893}
   - component: {fileID: 5537559567437774788}
   m_Layer: 0
-  m_Name: CtrlE
+  m_Name: 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -408,9 +409,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 993fd2ab1607d7c459f7f23304a5d3b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_keyCode: 101
+  m_keyCode: 51
   m_keyboardEventType: 4
-  m_requiredModifiers: 02000000
+  m_requiredModifiers: 
 --- !u!1 &5353078037229235988
 GameObject:
   m_ObjectHideFlags: 0

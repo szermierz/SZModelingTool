@@ -1,11 +1,30 @@
-﻿using UnityEditor;
+﻿using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace SZ.ModelingTool
 {
+    [ExecuteInEditMode]
     public class Vertex : ModelingToolBehaviour
     {
         public Model Model => GetComponentInParent<Model>();
+
+        private void OnDestroy()
+        {
+            var faces = Model.GetComponentsInChildren<Face>();
+            foreach(var face in faces)
+            {
+                if (face.Vertices.Contains(this))
+                    DestroyImmediate(face.gameObject);
+            }
+
+            var edges = Model.GetComponentsInChildren<Edge>();
+            foreach(var edge in edges)
+            {
+                if (edge.V1 == this || edge.V2 == this)
+                    DestroyImmediate(edge.gameObject);
+            }
+        }
 
         public Vector3 Position
         {
