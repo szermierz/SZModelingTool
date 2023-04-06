@@ -20,6 +20,8 @@ namespace SZ.ModelingTool
             var edge = drawGizmo as Edge;
             if (!edge || !edge.Valid)
                 return;
+            if (!edge.V1.gameObject.activeInHierarchy || !edge.V2.gameObject.activeInHierarchy)
+                return;
 
             var prevColor = Gizmos.color;
             var destColor = edge.Selected ? SelectedColor : DefaultColor;

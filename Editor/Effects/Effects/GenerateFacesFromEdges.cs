@@ -104,15 +104,20 @@ namespace SZ.ModelingTool
         protected override void EffectImplementation()
         {
             EnsureCloneModel(cloneVertices: true, cloneFaces: false);
-            var singleFace = FindSingleFace();
-            var newFace = GenerateInitialFace(singleFace);
+            var faces = FindFaces();
+            var newFaces = GenerateInitialFaces(faces);
 
             var vertices = IndexVertices();
             var edges = GatherEdges();
             var connectedVertices = BuildConnectionsMap(edges);
 
-            var facesToProcess = new List<Face>() { newFace };
-            var hashedFaces = new HashSet<FaceKey>() { FaceKey.FromFace(vertices, newFace) };
+            var facesToProcess = new List<Face>(newFaces);
+            var hashedFaces = new HashSet<FaceKey>();
+            foreach(var newFace in newFaces)
+            {
+                var key = FaceKey.FromFace(vertices, newFace);
+                hashedFaces.Add(key);
+            }
 
             ProcessFaces(vertices, connectedVertices, facesToProcess, hashedFaces);
         }
@@ -193,14 +198,22 @@ namespace SZ.ModelingTool
             }
         }
 
-        private Face GenerateInitialFace(Face singleFace)
+        private IEnumerable<Face> GenerateInitialFaces(IEnumerable<Face> faces)
         {
-            return GenerateFace
-            (
-                OldByNewVertices[singleFace.Vertices[0]],
-                OldByNewVertices[singleFace.Vertices[1]],
-                OldByNewVertices[singleFace.Vertices[2]]
-            );
+            var result = new List<Face>();
+            foreach(var face in faces)
+            {
+                var newFace = GenerateFace
+                (
+                    OldByNewVertices[face.Vertices[0]],
+                    OldByNewVertices[face.Vertices[1]],
+                    OldByNewVertices[face.Vertices[2]]
+                );
+
+                result.Add(newFace);
+            }
+
+            return result;
         }
 
         private Face GenerateFace(Vertex v1, Vertex v2, Vertex v3)
@@ -211,17 +224,16 @@ namespace SZ.ModelingTool
             return newFace;
         }
 
-        private Face FindSingleFace()
+        private IEnumerable<Face> FindFaces()
         {
             var faces = EffectsRoot.SourceFacesRoot.GetComponentsInChildren<Face>(includeInactive: false);
             if(!faces.Any())
                 faces = EffectsRoot.SourceFacesRoot.GetComponentsInChildren<Face>(includeInactive: true);
 
-            var singleFace = faces.FirstOrDefault();
-            if (default == singleFace)
+            if (!faces.Any())
                 throw new Exception("Failed to find a single face");
 
-            return singleFace;
+            return faces;
         }
     }
 }

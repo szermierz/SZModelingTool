@@ -8,9 +8,6 @@ namespace SZ.ModelingTool
     public class DivideEdgeTool : ToolBase
     {
         [SerializeField]
-        private Transform m_verticesRoot = default;
-    
-        [SerializeField]
         private Transform m_edgesRoot = default;
 
         public override void ActivateTool(EditorEventWrapper wrapper, IEnumerable<Vertex> selectedVertices, SceneView sceneView, Vector2 mousePos)
@@ -34,7 +31,7 @@ namespace SZ.ModelingTool
             var verticesMap = GetEdgesByVertices(edges);
 
             var v12 = new GameObject(nameof(Vertex), typeof(Vertex)).GetComponent<Vertex>();
-            v12.transform.SetParent(m_verticesRoot);
+            v12.transform.SetParent(existing.transform.parent);
             v12.transform.position = GetCenter(existing);
 
             Selection.objects = new Object[] { v12.gameObject };

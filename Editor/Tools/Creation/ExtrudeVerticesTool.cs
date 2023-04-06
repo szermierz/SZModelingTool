@@ -5,10 +5,19 @@ using UnityEngine;
 
 namespace SZ.ModelingTool
 {
-    public class ExtrudeTwoVerticesTool : ToolBase
+    public class ExtrudeVerticesTool : ToolBase
     {
+        public enum Mode
+        {
+            ExtrudeOne,
+            ExtrudeTwo
+        }
+
         [SerializeField]
         private Transform m_edgesRoot;
+
+        [SerializeField]
+        private Mode m_mode;
 
         public override void ActivateTool(EditorEventWrapper wrapper, IEnumerable<Vertex> vertices, SceneView sceneView, Vector2 mousePos)
         {
@@ -23,13 +32,46 @@ namespace SZ.ModelingTool
             var v1 = vertices.ElementAt(0);
             var v2 = vertices.ElementAt(1);
 
+            switch (m_mode)
+            {
+                case Mode.ExtrudeOne:
+                    ExtrudeOne(v1, v2);
+                    break;
+                case Mode.ExtrudeTwo:
+                    ExtrudeTwo(v1, v2);
+                    break;
+                default:
+                    throw new System.NotSupportedException(m_mode.ToString());
+            }
+        }
+
+        private void ExtrudeOne(Vertex v1, Vertex v2)
+        {
+            var newV1 = Spawn<Vertex>(v1.transform.parent);
+            newV1.Position = (v1.Position + v2.Position) / 2.0f;
+            
+            if (m_edgesRoot)
+            {
+                var newEdge1 = Spawn<Edge>(m_edgesRoot);
+                newEdge1.V1 = v1;
+                newEdge1.V2 = newV1;
+                var newEdge2 = Spawn<Edge>(m_edgesRoot);
+                newEdge2.V1 = newV1;
+                newEdge2.V2 = v2;
+            }
+
+            Selection.objects = new[] { newV1.gameObject };
+        }
+
+        private void ExtrudeTwo(Vertex v1, Vertex v2)
+        {
             var newV1 = Spawn<Vertex>(v1.transform.parent);
             newV1.Position = v1.Position;
 
             var newV2 = Spawn<Vertex>(v2.transform.parent);
             newV2.Position = v2.Position;
 
-            if(m_edgesRoot)
+            if (m_edgesRoot)
             {
                 var newEdge1 = Spawn<Edge>(m_edgesRoot);
                 newEdge1.V1 = v1;
