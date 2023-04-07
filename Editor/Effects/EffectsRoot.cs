@@ -9,12 +9,8 @@ namespace SZ.ModelingTool
         [Space(5)]
 
         [SerializeField]
-        private GameObject m_sourceVerticesRoot = default;
-        public GameObject SourceVerticesRoot => m_sourceVerticesRoot;
-
-        [SerializeField]
-        private GameObject m_sourceFacesRoot = default;
-        public GameObject SourceFacesRoot => m_sourceFacesRoot;
+        private GameObject m_sourceRoot = default;
+        public GameObject SourceRoot => m_sourceRoot;
 
         [Header("Destination")]
         [Space(5)]
@@ -27,8 +23,7 @@ namespace SZ.ModelingTool
         private GameObject m_destFacesRoot = default;
         public GameObject DestFacesRoot => m_destFacesRoot;
 
-        public bool IsValid => SourceVerticesRoot
-            && SourceFacesRoot
+        public bool IsValid => SourceRoot
             && DestVerticesRoot
             && DestFacesRoot;
 
@@ -49,13 +44,11 @@ namespace SZ.ModelingTool
 
         public void RunEffects()
         {
-            var sourceVericesRootActive = SourceVerticesRoot.activeSelf;
-            var sourceFacesRootActive = SourceFacesRoot.activeSelf;
+            var sourceRootActive = SourceRoot.activeSelf;
             var destVerticesRootActive = DestVerticesRoot.activeSelf;
             var destFacesRootActive = DestFacesRoot.activeSelf;
 
-            SourceVerticesRoot.SetActive(true);
-            SourceFacesRoot.SetActive(true);
+            SourceRoot.SetActive(true);
             DestVerticesRoot.SetActive(true);
             DestFacesRoot.SetActive(true);
 
@@ -69,8 +62,7 @@ namespace SZ.ModelingTool
             foreach (var effect in Effects)
                 effect.Run(this);
 
-            SourceVerticesRoot.SetActive(false);
-            SourceFacesRoot.SetActive(false);
+            SourceRoot.SetActive(false);
             DestVerticesRoot.SetActive(true);
             DestFacesRoot.SetActive(true);
 
@@ -84,8 +76,7 @@ namespace SZ.ModelingTool
                     nextEffectsRoot.RunEffects();
             }
 
-            SourceVerticesRoot.SetActive(sourceVericesRootActive);
-            SourceFacesRoot.SetActive(sourceFacesRootActive);
+            SourceRoot.SetActive(sourceRootActive);
             DestVerticesRoot.SetActive(destVerticesRootActive);
             DestFacesRoot.SetActive(destFacesRootActive);
         }
@@ -96,7 +87,7 @@ namespace SZ.ModelingTool
             {
                 if (null == OldByNewVertices || null == NewByOldVertices)
                 {
-                    CloneModel<Vertex>(SourceVerticesRoot, DestVerticesRoot, out var oldByNew, out var newByOld);
+                    CloneModel<Vertex>(SourceRoot, DestVerticesRoot, out var oldByNew, out var newByOld);
                     OldByNewVertices = oldByNew;
                     NewByOldVertices = newByOld;
                 }
@@ -111,7 +102,7 @@ namespace SZ.ModelingTool
             {
                 if (null == OldByNewFaces || null == NewByOldFaces)
                 {
-                    CloneModel<Face>(SourceFacesRoot, DestFacesRoot, out var oldByNew, out var newByOld);
+                    CloneModel<Face>(SourceRoot, DestFacesRoot, out var oldByNew, out var newByOld);
                     OldByNewFaces = oldByNew;
                     NewByOldFaces = newByOld;
                 }

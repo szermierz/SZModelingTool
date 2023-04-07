@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -22,6 +21,11 @@ namespace SZ.ModelingTool
         }
 
         public override bool Selected => LocallySelected || Vertices.All(_vertex => _vertex ? _vertex.Selected : true);
+
+        public bool IsValid => Vertices.Count() == 3
+            && Vertices[0] && Vertices[0].gameObject.activeInHierarchy
+            && Vertices[1] && Vertices[1].gameObject.activeInHierarchy
+            && Vertices[2] && Vertices[2].gameObject.activeInHierarchy;
 
         public virtual bool LocallySelected
         {

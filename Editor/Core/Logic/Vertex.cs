@@ -11,14 +11,20 @@ namespace SZ.ModelingTool
 
         private void OnDestroy()
         {
-            var faces = Model.GetComponentsInChildren<Face>();
+            Component parent = Model;
+            if (!parent)
+                parent = transform.parent;
+            if (!parent)
+                return;
+
+            var faces = parent.GetComponentsInChildren<Face>(true);
             foreach(var face in faces)
             {
                 if (face.Vertices.Contains(this))
                     DestroyImmediate(face.gameObject);
             }
 
-            var edges = Model.GetComponentsInChildren<Edge>();
+            var edges = parent.GetComponentsInChildren<Edge>(true);
             foreach(var edge in edges)
             {
                 if (edge.V1 == this || edge.V2 == this)

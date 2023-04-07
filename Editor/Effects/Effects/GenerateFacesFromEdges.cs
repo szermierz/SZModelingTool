@@ -109,7 +109,7 @@ namespace SZ.ModelingTool
 
             var vertices = IndexVertices();
             var edges = GatherEdges();
-            var connectedVertices = BuildConnectionsMap(edges);
+            var connectedVertices = edges.BuildConnectionsMap(v => OldByNewVertices[v]);
 
             var facesToProcess = new List<Face>(newFaces);
             var hashedFaces = new HashSet<FaceKey>();
@@ -177,27 +177,6 @@ namespace SZ.ModelingTool
             }
         }
 
-        private Dictionary<Vertex, List<Vertex>> BuildConnectionsMap(List<Edge> edges)
-        {
-            var connectedVertices = new Dictionary<Vertex, List<Vertex>>();
-            foreach (var edge in edges)
-            {
-                AddVertex(OldByNewVertices[edge.V1], OldByNewVertices[edge.V2]);
-                AddVertex(OldByNewVertices[edge.V2], OldByNewVertices[edge.V1]);
-            }
-
-            return connectedVertices;
-
-            void AddVertex(Vertex from, Vertex to)
-            {
-                if(!connectedVertices.ContainsKey(from))
-                    connectedVertices.Add(from, new List<Vertex>());
-
-                var list = connectedVertices[from];
-                list.Add(to);
-            }
-        }
-
         private IEnumerable<Face> GenerateInitialFaces(IEnumerable<Face> faces)
         {
             var result = new List<Face>();
@@ -226,12 +205,14 @@ namespace SZ.ModelingTool
 
         private IEnumerable<Face> FindFaces()
         {
-            var faces = EffectsRoot.SourceFacesRoot.GetComponentsInChildren<Face>(includeInactive: false);
+            IEnumerable<Face> faces = EffectsRoot.SourceRoot.GetComponentsInChildren<Face>(includeInactive: false);
             if(!faces.Any())
-                faces = EffectsRoot.SourceFacesRoot.GetComponentsInChildren<Face>(includeInactive: true);
+                faces = EffectsRoot.SourceRoot.GetComponentsInChildren<Face>(includeInactive: true);
 
             if (!faces.Any())
                 throw new Exception("Failed to find a single face");
+
+            faces = faces.Where(face => face.IsValid);
 
             return faces;
         }

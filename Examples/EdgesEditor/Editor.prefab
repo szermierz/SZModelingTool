@@ -88,7 +88,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ab79eb8435d8f04eb00c4ffffe8be87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_edgesRoot: {fileID: 0}
   m_mode: 0
 --- !u!1 &2032142319104777272
 GameObject:
@@ -366,7 +365,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d07e216292f76542b2a2e71aacfcc3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_edgesRoot: {fileID: 0}
   m_deleteOnExisting: 1
 --- !u!1 &5048218828973343402
 GameObject:
@@ -567,7 +565,7 @@ GameObject:
   - component: {fileID: 6751882670026536349}
   - component: {fileID: 6624702250600411318}
   m_Layer: 0
-  m_Name: ExtrudeTwoVertices
+  m_Name: ExtrudeVerticesLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -600,7 +598,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ab79eb8435d8f04eb00c4ffffe8be87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_edgesRoot: {fileID: 0}
   m_mode: 1
 --- !u!1 &7077154299993100332
 GameObject:
@@ -694,8 +691,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 255b2604c6b72d847a553513126ac2b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_verticesRoot: {fileID: 0}
-  m_edgesRoot: {fileID: 0}
 --- !u!1 &8436013661104995865
 GameObject:
   m_ObjectHideFlags: 0

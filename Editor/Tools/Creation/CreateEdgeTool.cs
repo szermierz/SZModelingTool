@@ -8,9 +8,6 @@ namespace SZ.ModelingTool
     public class CreateEdgeTool : ToolBase
     {
         [SerializeField]
-        private Transform m_edgesRoot = default;
-
-        [SerializeField]
         private bool m_deleteOnExisting = true;
 
         public override void ActivateTool(EditorEventWrapper wrapper, IEnumerable<Vertex> vertices, SceneView sceneView, Vector2 mousePos)
@@ -26,8 +23,12 @@ namespace SZ.ModelingTool
             var v1 = vertices.ElementAt(0);
             var v2 = vertices.ElementAt(1);
 
-            var edges = m_edgesRoot.GetComponentsInChildren<Edge>();
+            var edges = Model.GetComponentsInChildren<Edge>();
             var existing = edges.FirstOrDefault(_edge => Matching(_edge));
+
+            var parent = edges.FirstOrDefault(_edge => _edge.Valid && (_edge.V1 == v1 || _edge.V1 == v2 || _edge.V2 == v1 || _edge.V2 == v2));
+            if (null == parent)
+                return;
 
             if (existing)
             {
@@ -37,7 +38,7 @@ namespace SZ.ModelingTool
             else
             {
                 var edge = new GameObject(nameof(Edge), typeof(Edge)).GetComponent<Edge>();
-                edge.transform.SetParent(m_edgesRoot);
+                edge.transform.SetParent(parent.transform.parent);
                 edge.V1 = v1;
                 edge.V2 = v2;
             }

@@ -7,9 +7,6 @@ namespace SZ.ModelingTool
 {
     public class DivideEdgeTool : ToolBase
     {
-        [SerializeField]
-        private Transform m_edgesRoot = default;
-
         public override void ActivateTool(EditorEventWrapper wrapper, IEnumerable<Vertex> selectedVertices, SceneView sceneView, Vector2 mousePos)
         {
             base.ActivateTool(wrapper, selectedVertices, sceneView, mousePos);
@@ -23,7 +20,7 @@ namespace SZ.ModelingTool
             var v1 = selectedVertices.ElementAt(0);
             var v2 = selectedVertices.ElementAt(1);
 
-            var edges = m_edgesRoot.GetComponentsInChildren<Edge>();
+            var edges = Model.GetComponentsInChildren<Edge>();
             var existing = edges.FirstOrDefault(_edge => Matching(_edge));
             if (!existing)
                 return;
@@ -31,7 +28,7 @@ namespace SZ.ModelingTool
             var verticesMap = GetEdgesByVertices(edges);
 
             var v12 = new GameObject(nameof(Vertex), typeof(Vertex)).GetComponent<Vertex>();
-            v12.transform.SetParent(existing.transform.parent);
+            v12.transform.SetParent(v1.transform.parent);
             v12.transform.position = GetCenter(existing);
 
             Selection.objects = new Object[] { v12.gameObject };
@@ -59,7 +56,7 @@ namespace SZ.ModelingTool
                             continue;
 
                         var e = new GameObject(nameof(Edge), typeof(Edge)).GetComponent<Edge>();
-                        e.transform.SetParent(m_edgesRoot);
+                        e.transform.SetParent(existing.transform.parent);
                         e.V1 = v12;
                         e.V2 = outherVertex;
                     }
@@ -67,7 +64,7 @@ namespace SZ.ModelingTool
             }
 
             var newEdge = new GameObject(nameof(Edge), typeof(Edge)).GetComponent<Edge>();
-            newEdge.transform.SetParent(m_edgesRoot);
+            newEdge.transform.SetParent(existing.transform.parent);
             newEdge.V1 = v1;
             newEdge.V2 = v12;
 
